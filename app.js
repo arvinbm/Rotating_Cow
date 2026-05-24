@@ -170,8 +170,8 @@ window.onload = function setup () {
 }
 
 function render() {
-    gl.clear(gl.COLOR_BUFFER_BIT);
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.enable(gl.DEPTH_TEST);
     gl.enable(gl.CULL_FACE);
     gl.frontFace(gl.CCW);
@@ -278,7 +278,8 @@ function init() {
         alert('Your browser does not support WebGL');
     }
 
-    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.clearColor(0.5, 0.5, 0.5, 1.0);
     gl.lineWidth(1);
 
@@ -589,7 +590,7 @@ function setEventListener() {
             rotationAngleAlongZ -= 5;
         }
 
-        // The case where s is pressed (reposition the cow).
+        // The case where r is pressed (reposition the cow).
         else if (event.key === 'r') {
             rKeyWasPressed = true;
         }
