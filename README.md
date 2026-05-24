@@ -2,6 +2,8 @@
 
 A real-time 3D WebGL application that renders an interactive cow model with Phong lighting, a global light source, and a sweeping spotlight. Built from scratch using raw WebGL2 and GLSL shaders — no libraries or 3D engines.
 
+![Demo](demo.gif)
+
 ---
 
 ## Features
@@ -36,9 +38,9 @@ A real-time 3D WebGL application that renders an interactive cow model with Phon
 | Right-drag mouse | Rotate cow along X and Y |
 | Up / Down arrow keys | Translate cow toward / away from camera (Z axis) |
 | Left / Right arrow keys | Rotate cow counter-clockwise / clockwise (Z axis) |
-| p | Toggle global light source orbiting |
-| s | Toggle spotlight sweeping |
-| r | Reset cow to origin |
+| `p` | Toggle global light source orbiting |
+| `s` | Toggle spotlight sweeping |
+| `r` | Reset cow to origin |
 
 ---
 
@@ -52,9 +54,9 @@ cd Rotating_Cow
 npx serve .
 ```
 
-Then open http://localhost:3000 in Chrome or Firefox.
+Then open `http://localhost:3000` in Chrome or Firefox.
 
-Alternatively, open index.html directly — most browsers will load it from the filesystem without a server.
+Alternatively, open `index.html` directly from the filesystem — no server needed.
 
 ---
 
@@ -62,60 +64,32 @@ Alternatively, open index.html directly — most browsers will load it from the 
 
 The fragment shader implements a three-component Phong model:
 
-- **Ambient** — constant base colour (0.52, 0.37, 0.26) scaled by 0.6
-- **Diffuse** — computed from the dot product of the surface normal and the direction to the global light source
+- **Ambient** — constant base colour `(0.52, 0.37, 0.26)` scaled by 0.6
+- **Diffuse** — dot product of surface normal and direction to the global light source
 - **Specular** — half-vector Blinn-Phong highlight with configurable shininess (default 200)
-- **Spotlight** — additive yellow-tinted contribution (0.5, 0.5, 0.1) applied to fragments inside the spotlight cone (7.5 degree half-angle, cosine test)
+- **Spotlight** — additive yellow-tinted contribution `(0.5, 0.5, 0.1)` applied inside the cone (7.5° half-angle, cosine test)
 
 ---
 
 ## Screenshots
 
 ### Default View
-
-The cow rendered on load with Phong shading. The yellow wireframe is the spotlight indicator; the red X is the global light source.
-
 ![Default view](screenshots/01_default.png)
 
----
+### Rotation (right-drag)
+![Rotated](screenshots/02_rotated.png)
 
-### Right-Drag Rotation
+### Global Light Orbiting (`p`)
+![Global light rotating](screenshots/03_light_rotating.png)
 
-Right-click and drag to rotate the cow freely along the X and Y axes.
+### Spotlight Active (`s`)
+![Spotlight](screenshots/04_spotlight.png)
 
-![Cow rotated to show rear view](screenshots/02_rotated.png)
+### Translation (left-drag)
+![Translated](screenshots/05_translated.png)
 
----
-
-### Global Light Source Orbiting (p)
-
-Press p to start the global light source orbiting around the scene. The diffuse and specular highlights shift visibly as the light moves.
-
-![Global light source rotating](screenshots/03_light_rotating.png)
-
----
-
-### Spotlight Active (s)
-
-Press s to toggle the spotlight. It sweeps left and right automatically through a 60 degree arc, casting a warm yellow-tinted beam on the cow's surface.
-
-![Spotlight sweeping across the cow](screenshots/04_spotlight.png)
-
----
-
-### Left-Drag Translation
-
-Left-click and drag to translate the cow along the X and Y axes.
-
-![Cow translated from origin](screenshots/05_translated.png)
-
----
-
-### Reset (r)
-
-Press r at any time to snap the cow back to its starting position and orientation.
-
-![Cow reset to origin](screenshots/06_reset.png)
+### After Reset (`r`)
+![Reset](screenshots/06_reset.png)
 
 ---
 
@@ -123,14 +97,14 @@ Press r at any time to snap the cow back to its starting position and orientatio
 
 Two bugs were fixed from the original submission:
 
-1. **Depth buffer not cleared each frame** — gl.clear was only clearing COLOR_BUFFER_BIT. With depth testing enabled, the depth buffer accumulated stale values across frames, causing z-fighting artifacts as the cow rotated. Fixed by adding DEPTH_BUFFER_BIT: gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT).
+1. **Depth buffer not cleared each frame** — `gl.clear` was only clearing `COLOR_BUFFER_BIT`. With depth testing enabled, the depth buffer accumulated stale values across frames, causing z-fighting artifacts during rotation. Fixed: `gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)`.
 
-2. **gl.clearColor called after gl.clear** — the clear colour was set to black after the buffer was already cleared, so the first frame always rendered with the grey initialisation colour. Fixed by moving gl.clearColor before the gl.clear call.
+2. **`gl.clearColor` called after `gl.clear`** — the clear colour was set to black *after* the buffer was already cleared, so the first frame always rendered grey instead of black. Fixed by moving `gl.clearColor` before `gl.clear`.
 
 ---
 
 ## Notes
 
 - Requires a browser with WebGL2 support (Chrome 56+, Firefox 51+, Safari 15+)
-- The cow geometry (cow.js) is a standard benchmark mesh
-- Shader source is stored as string arrays in app.js and compiled at runtime via gl.compileShader
+- The cow geometry (`cow.js`) is a standard benchmark mesh
+- Shader source is stored as string arrays in `app.js` and compiled at runtime via `gl.compileShader`
